@@ -31,6 +31,8 @@ import static io.anuke.arc.Core.*;
 public class Vars implements Loadable{
     /** Whether to load locales.*/
     public static boolean loadLocales = true;
+    /** Maximum number of broken blocks. TODO implement or remove.*/
+    public static final int maxBrokenBlocks = 256;
     /** IO buffer size. */
     public static final int bufferSize = 8192;
     /** global charset, since Android doesn't support the Charsets class */
@@ -43,6 +45,8 @@ public class Vars implements Loadable{
     public static final String discordURL = "https://discord.gg/mindustry";
     /** URL for sending crash reports to */
     public static final String crashReportURL = "http://mins.us.to/report";
+    /** URL the links to the wiki's modding guide.*/
+    public static final String modGuideURL = "https://mindustrygame.github.io/wiki/modding/";
     /** list of built-in servers.*/
     public static final Array<String> defaultServers = Array.with(/*"mins.us.to"*/);
     /** maximum distance between mine and core that supports automatic transferring */
@@ -194,10 +198,9 @@ public class Vars implements Loadable{
 
         Version.init();
 
-        tree = new FileTree();
-        if(mods == null){
-            mods = new Mods();
-        }
+        if(tree == null) tree = new FileTree();
+        if(mods == null) mods = new Mods();
+
         content = new ContentLoader();
         loops = new LoopControl();
         defaultWaves = new DefaultWaves();
@@ -256,7 +259,7 @@ public class Vars implements Loadable{
     public static void loadSettings(){
         Core.settings.setAppName(appName);
 
-        if(steam){
+        if(steam || "steam".equals(Version.modifier)){
             Core.settings.setDataDirectory(Core.files.local("saves/"));
         }
 
